@@ -30,10 +30,14 @@ export default {
     EventBus.$on('activeFingerChanged', ({ parentId }) => {
       this.activeFinger = null;
       if (parentId !== this.normalizedId) {
-        this.$el.querySelectorAll('.abcjs-note_selected').forEach((el) => {
-          el.classList.remove('abcjs-note_selected');
-        });
+        this.clearSelected();
       }
+    });
+    EventBus.$on('instrumentChanged', () => {
+      this.activeFinger = null;
+    });
+    EventBus.$on('instrumentStringChanged', () => {
+      this.activeFinger = null;
     });
   },
   props: {

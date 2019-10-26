@@ -4,8 +4,9 @@
 </template>
 
 <script>
-import abcjs from 'abcjs';
 import EventBus from '../eventbus';
+
+let abcjs = null;
 
 export default {
   name: 'VNotesDisplay',
@@ -23,7 +24,8 @@ export default {
       required: true,
     },
   },
-  mounted() {
+  async mounted() {
+    abcjs = await import('abcjs');
     abcjs.renderAbc(`${this.normalizedId}-notes`, this.tune, {
       scale: 1.1,
       staffwidth: 300,
@@ -40,10 +42,14 @@ export default {
       }
       const noteNum = finger - 1;
       const $note = this.$el.querySelector(`.abcjs-n${noteNum}`);
-      this.$el.querySelectorAll('.abcjs-note_selected').forEach((el) => {
-        el.classList.remove('abcjs-note_selected');
-      });
+      this.resetSelected();
       $note.classList.add('abcjs-note_selected');
+    });
+    EventBus.$on('instrumentChanged', () => {
+      this.resetSelected();
+    });
+    EventBus.$on('instrumentStringChanged', () => {
+      this.resetSelected();
     });
   },
   computed: {
@@ -64,6 +70,11 @@ export default {
           const match = regex.exec(el.className.baseVal);
           this.$emit('noteClicked', parseInt(match[1], 10) + 1);
         }
+      });
+    },
+    resetSelected() {
+      this.$el.querySelectorAll('.abcjs-note_selected').forEach((el) => {
+        el.classList.remove('abcjs-note_selected');
       });
     },
   },

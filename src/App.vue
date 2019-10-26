@@ -93,16 +93,16 @@
 
 <script>
 import VFingerPattern from './components/VFingerPattern.vue';
-import VModal from './components/VModal.vue';
-import VInstrumentSelect from './components/VInstrumentSelect.vue';
-import VStringSelect from './components/VStringSelect.vue';
 import { getNotes } from './util/notes';
 import EventBus from './eventbus';
 
 export default {
   name: 'app',
   components: {
-    VStringSelect, VInstrumentSelect, VModal, VFingerPattern,
+    VStringSelect: () => import('./components/VStringSelect.vue'),
+    VInstrumentSelect: () => import('./components/VInstrumentSelect.vue'),
+    VModal: () => import('./components/VModal.vue'),
+    VFingerPattern,
   },
   data() {
     return {
