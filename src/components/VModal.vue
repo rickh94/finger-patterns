@@ -11,7 +11,9 @@
         </main>
         <footer class="modal-actions">
           <slot name="actions">
-            <button class="modal-action-button" :title="`Done with ${title}`" @click="closeModal">Done</button>
+            <button class="modal-action-button" :title="`Done with ${title}`" @click="closeModal">
+              Done
+            </button>
           </slot>
         </footer>
       </div>
@@ -21,7 +23,7 @@
 
 <script>
 export default {
-  name: "VModal",
+  name: 'VModal',
   props: {
     open: {
       type: Boolean,
@@ -30,14 +32,14 @@ export default {
     title: {
       type: String,
       required: true,
-    }
+    },
   },
   methods: {
     closeModal() {
       this.$emit('closeModal');
     },
   },
-}
+};
 </script>
 
 <style scoped>

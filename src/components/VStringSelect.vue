@@ -1,5 +1,5 @@
 <template>
-  <form title="Select Instrument">
+  <form title="Select String">
     <div class="flex-row align-center option" v-if="instrument === 'Violin'">
       <input type="radio" name="string" id="e-string" value="E" v-model="instrumentString"
              @change="stringChanged">
@@ -25,18 +25,28 @@
              @change="stringChanged">
       <label for="c-string">C String</label>
     </div>
+    <div class="flex-row align-center option">
+      <input type="radio"
+             name="string"
+             id="no-string"
+             value="fingers-only"
+             v-model="instrumentString"
+             @change="stringChanged"
+      >
+      <label for="no-string">Fingers Only</label>
+    </div>
   </form>
 </template>
 
 <script>
-import { EventBus } from '../main.js';
+import EventBus from '../eventbus';
 
 export default {
   name: 'v-string-select',
   data() {
     return {
       instrumentString: this.selected,
-    }
+    };
   },
   props: {
     instrument: {
@@ -53,5 +63,5 @@ export default {
       EventBus.$emit('instrumentStringChanged', event.target.value);
     },
   },
-}
+};
 </script>

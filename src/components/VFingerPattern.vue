@@ -1,8 +1,10 @@
 <template>
-  <article>
+  <article class="finger-pattern">
     <header>
-      <h2 class="heading">{{ patternName }} Pattern</h2>
+      <h2 class="finger-pattern__heading">{{ patternName }} Pattern</h2>
     </header>
+    <v-notes-display :normalized-id="normalizedId" :clef="clef" :notes="notes"
+                     @noteClicked="onNoteClicked" v-if="notes" :key="`${clef}${notes}`" />
     <v-finger-display :active-finger="activeFinger" :normalized-id="normalizedId"
                       :widths="widths" :radius="radius"
                       @activeFingerChanged="setFingerActive"
@@ -12,22 +14,26 @@
 </template>
 
 <script>
-import { EventBus } from '../main.js';
 import VFingerDisplay from './VFingerDisplay.vue';
+import VNotesDisplay from './VNotesDisplay.vue';
+import EventBus from '../eventbus';
 
 export default {
   name: 'VFingerPattern',
-  components: { VFingerDisplay },
+  components: { VNotesDisplay, VFingerDisplay },
   data() {
     return {
       activeFinger: null,
-    }
+    };
   },
   created() {
-    EventBus.$on('activeFingerChanged', () => {
+    EventBus.$on('activeFingerChanged', ({ parentId }) => {
       this.activeFinger = null;
-    });
-    EventBus.$on('instrumentChanged', (nextInstrument) => {
+      if (parentId !== this.normalizedId) {
+        this.$el.querySelectorAll('.abcjs-note_selected').forEach((el) => {
+          el.classList.remove('abcjs-note_selected');
+        });
+      }
     });
   },
   props: {
@@ -51,27 +57,44 @@ export default {
       type: Number,
       default: 0,
     },
+    notes: {
+      type: String,
+      required: false,
+    },
+    clef: {
+      type: String,
+      required: true,
+    },
   },
   methods: {
+    clearSelected() {
+      this.$el.querySelectorAll('.abcjs-note_selected').forEach((el) => {
+        el.classList.remove('abcjs-note_selected');
+      });
+    },
     setFingerActive(num) {
       if (this.activeFinger === num) {
+        this.clearSelected();
         this.activeFinger = null;
       } else {
-        EventBus.$emit('activeFingerChanged');
+        EventBus.$emit('activeFingerChanged', { parentId: this.normalizedId, finger: num });
         this.activeFinger = num;
       }
+    },
+    onNoteClicked(num) {
+      this.setFingerActive(num);
     },
   },
   computed: {
     widths() {
-      return this.steps.map(item => {
+      return this.steps.map((item) => {
         if (item === 'H') {
           return 4;
-        } else if (item === 'A') {
-          return 20;
-        } else {
-          return 16;
         }
+        if (item === 'A') {
+          return 20;
+        }
+        return 16;
       });
     },
     normalizedId() {
@@ -82,13 +105,17 @@ export default {
 </script>
 
 <style scoped>
-  .heading {
+  .finger-pattern__heading {
     width: 300px;
     text-align: left;
     margin-top: 1rem;
     font-size: 20px;
     font-weight: normal;
   }
+
+  /*.finger-pattern {*/
+  /*  border: 2px solid #ae00bf;*/
+  /*}*/
 
 
 </style>

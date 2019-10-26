@@ -7,18 +7,34 @@
           class="clear-button"
           title="Change Instrument"
           @click="instrumentSelectOpen = true"
+          v-if="!printView"
         >
           {{ instrument }}
         </button>
+        <span v-else>{{ instrument }}</span>
         Finger Patterns
       </h1>
-      <h3 class="main-header__subtitle">on the
+      <h3 class="main-header__subtitle" v-if="instrumentString !== 'fingers-only'">on the
         <button
           title="Change String"
           :class="{'main-header__button': !printView}"
           class="clear-button"
-          @click="stringSelectOpen = true">
+          @click="stringSelectOpen = true"
+          v-if="!printView"
+        >
           {{ instrumentString }} String
+        </button>
+        <span v-else>{{ instrumentString }} String</span>
+      </h3>
+      <h3 class="main-header__subtitle" v-else>
+        <button
+          title="Change String"
+          :class="{'main-header__button': !printView}"
+          class="clear-button"
+          @click="stringSelectOpen = true"
+          v-if="!printView"
+        >
+          Fingers Only
         </button>
       </h3>
       <a class="print-button main-header__button clear-button"
@@ -31,15 +47,33 @@
     </header>
     <main class="main-body">
       <div class="col">
-        <v-finger-pattern pattern-name="1-2" :steps="['W', 'H', 'W', 'W']"></v-finger-pattern>
-        <v-finger-pattern pattern-name="2-3" :steps="['W', 'W', 'H', 'W']"></v-finger-pattern>
-        <v-finger-pattern pattern-name="3-4" :steps="['W', 'W', 'W', 'H']"></v-finger-pattern>
+        <v-finger-pattern pattern-name="1-2"
+                          :steps="['W', 'H', 'W', 'W']"
+                          :notes="oneTwoNotes"
+                          :clef="clef"
+        ></v-finger-pattern>
+        <v-finger-pattern pattern-name="2-3"
+                          :steps="['W', 'W', 'H', 'W']"
+                          :notes="twoThreeNotes"
+                          :clef="clef"
+        ></v-finger-pattern>
+        <v-finger-pattern pattern-name="3-4"
+                          :steps="['W', 'W', 'W', 'H']"
+                          :notes="threeFourNotes"
+                          :clef="clef"
+        ></v-finger-pattern>
       </div>
       <div class="col">
         <v-finger-pattern pattern-name="Whole Steps"
-                          :steps="['H', 'W', 'W', 'W']"></v-finger-pattern>
+                          :steps="['H', 'W', 'W', 'W']"
+                          :notes="wholeStepsNotes"
+                          :clef="clef"
+        ></v-finger-pattern>
         <v-finger-pattern pattern-name="Half Steps"
-                          :steps="['W', 'H', 'A', 'H']"></v-finger-pattern>
+                          :steps="['W', 'H', 'A', 'H']"
+                          :notes="halfStepsNotes"
+                          :clef="clef"
+        ></v-finger-pattern>
       </div>
     </main>
     <v-modal :open="instrumentSelectOpen" title="Select Instrument"
@@ -61,12 +95,15 @@
 import VFingerPattern from './components/VFingerPattern.vue';
 import VModal from './components/VModal.vue';
 import VInstrumentSelect from './components/VInstrumentSelect.vue';
-import { EventBus } from './main.js';
 import VStringSelect from './components/VStringSelect.vue';
+import { getNotes } from './util/notes';
+import EventBus from './eventbus';
 
 export default {
   name: 'app',
-  components: { VStringSelect, VInstrumentSelect, VModal, VFingerPattern },
+  components: {
+    VStringSelect, VInstrumentSelect, VModal, VFingerPattern,
+  },
   data() {
     return {
       instrument: 'Violin',
@@ -82,12 +119,12 @@ export default {
     this.instrument = urlParams.get('instrument') || 'Violin';
     this.instrumentString = urlParams.get('instrumentString') || 'A';
     if (this.printView) {
-      document.querySelector('body').style.backgroundColor = 'white';
+      document.querySelector('body').classList.add('print-mode');
     }
-    EventBus.$on('instrumentChanged', nextInstrument => {
+    EventBus.$on('instrumentChanged', (nextInstrument) => {
       this.instrument = nextInstrument;
     });
-    EventBus.$on('instrumentStringChanged', nextInstrumentString => {
+    EventBus.$on('instrumentStringChanged', (nextInstrumentString) => {
       this.instrumentString = nextInstrumentString;
     });
   },
@@ -102,11 +139,37 @@ export default {
       url.search = params.toString();
       return url;
     },
+    oneTwoNotes() {
+      return getNotes('1-2', this.instrument, this.instrumentString);
+    },
+    twoThreeNotes() {
+      return getNotes('2-3', this.instrument, this.instrumentString);
+    },
+    threeFourNotes() {
+      return getNotes('3-4', this.instrument, this.instrumentString);
+    },
+    wholeStepsNotes() {
+      return getNotes('whole-steps', this.instrument, this.instrumentString);
+    },
+    halfStepsNotes() {
+      return getNotes('half-steps', this.instrument, this.instrumentString);
+    },
+    clef() {
+      switch (this.instrument) {
+        case 'Violin':
+          return 'treble';
+        case 'Viola':
+          return 'alto';
+        default:
+          return null;
+      }
+    },
   },
 };
 </script>
 
 <style>
+  /*noinspection CssUnknownTarget*/
   @import url('https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700&display=swap');
 
   * {
@@ -115,6 +178,11 @@ export default {
 
   body {
     background-color: rgba(232, 0, 255, 0.02);
+  }
+
+  /*noinspection CssUnusedSymbol*/
+  body.print-mode {
+    background-color: white;
   }
 
   .main-header {
@@ -153,6 +221,7 @@ export default {
     width: 100%;
     text-align: center;
     color: dimgray;
+    margin-top: 0.8rem;
   }
 
 
