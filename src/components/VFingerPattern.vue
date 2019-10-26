@@ -4,11 +4,14 @@
       <h2 class="finger-pattern__heading">{{ patternName }} Pattern</h2>
     </header>
     <v-notes-display :normalized-id="normalizedId" :clef="clef" :notes="notes"
-                     @noteClicked="onNoteClicked" v-if="notes" :key="`${clef}${notes}`" />
+                     @noteClicked="onNoteClicked" v-if="notes" :key="`${clef}${notes}`"
+                     :raised="notesRaised"
+    />
     <v-finger-display :active-finger="activeFinger" :normalized-id="normalizedId"
                       :widths="widths" :radius="radius"
                       @activeFingerChanged="setFingerActive"
                       :empty-string-left="emptyStringLeft"
+                      :raised="fingersRaised"
     />
   </article>
 </template>
@@ -68,6 +71,14 @@ export default {
     clef: {
       type: String,
       required: true,
+    },
+    notesRaised: {
+      type: Boolean,
+      default: false,
+    },
+    fingersRaised: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {

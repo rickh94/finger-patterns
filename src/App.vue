@@ -6,7 +6,7 @@
         <button
           :class="{
           'thick-bottom-border': !printView,
-          'raised-button': buttonRaised === 'instrument',
+          'raised-button': elementRaised === 'instrument',
           }"
           class="clear-button"
           title="Change Instrument"
@@ -23,7 +23,7 @@
           title="Change String"
           :class="{
           'thick-bottom-border': !printView,
-          'raised-button': buttonRaised === 'instrumentString',
+          'raised-button': elementRaised === 'instrument-string',
           }"
           class="clear-button"
           @click="stringSelectOpen = true"
@@ -46,7 +46,7 @@
       </h3>
       <div class="absolute-buttons">
         <a class="print-button thick-bottom-border clear-button"
-           :class="{'raised-button': buttonRaised === 'print'}"
+           :class="{'raised-button': elementRaised === 'print'}"
            target="_blank" rel="noopener noreferrer"
            :href="printUrl"
            v-show="!printView"
@@ -67,6 +67,8 @@
           :steps="['W', 'H', 'W', 'W']"
           :notes="oneTwoNotes"
           :clef="clef"
+          :notes-raised="elementRaised === 'notes'"
+          :fingers-raised="elementRaised === 'fingers'"
         ></v-finger-pattern>
         <v-finger-pattern
           pattern-name="2-3"
@@ -114,29 +116,8 @@
         <v-string-select :instrument="instrument" :selected="instrumentString" />
       </template>
     </v-modal>
-    <v-modal :open="helpOpen" title="Help" @closeModal="closeHelp" no-dim>
-      <template v-slot:content>
-        <p>Click the
-          <button class="thick-bottom-border clear-button" @click="buttonRaised = 'instrument'">
-            instrument
-          </button>
-          in the title to switch instruments.
-        </p>
-        <p>Click the
-          <button class="thick-bottom-border clear-button"
-                  @click="buttonRaised = 'instrumentString'">string
-          </button>
-          in the subtitle to change strings (or remove the staves entirely).
-        </p>
-        <p>Click the
-          <button class="thick-bottom-border clear-button" @click="buttonRaised = 'print'">Print
-            View
-          </button>
-          button to get a more printer friendly version. Your string and instrument settings will be
-          maintained.
-        </p>
-      </template>
-    </v-modal>
+    <v-help-modal :change-element-raised="changeElementRaised" :on-close="closeHelp"
+                  :open="helpOpen" />
   </div>
 </template>
 
@@ -144,10 +125,12 @@
 import VFingerPattern from './components/VFingerPattern.vue';
 import { getNotes } from './util/notes';
 import EventBus from './eventbus';
+import VHelpModal from './components/VHelpModal.vue';
 
 export default {
   name: 'app',
   components: {
+    VHelpModal,
     VStringSelect: () => import('./components/VStringSelect.vue'),
     VInstrumentSelect: () => import('./components/VInstrumentSelect.vue'),
     VModal: () => import('./components/VModal.vue'),
@@ -161,7 +144,7 @@ export default {
       stringSelectOpen: false,
       printView: false,
       helpOpen: false,
-      buttonRaised: null,
+      elementRaised: null,
     };
   },
   created() {
@@ -219,7 +202,10 @@ export default {
   methods: {
     closeHelp() {
       this.helpOpen = false;
-      this.buttonRaised = null;
+      this.elementRaised = null;
+    },
+    changeElementRaised(nextButton) {
+      this.elementRaised = nextButton;
     },
   },
 };

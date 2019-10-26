@@ -7,6 +7,7 @@
     viewBox="0 0 79.374999 26.458334"
     version="1.1"
     :id="normalizedId + '-finger-pattern'"
+    :class="{raised: raised}"
   >
     <g
       id="finger-pattern"
@@ -143,6 +144,10 @@ export default {
       type: Number,
       default: 0,
     },
+    raised: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     activeFingerChanged(num) {
@@ -213,5 +218,7 @@ export default {
     cursor: default;
   }
 
-
+  .raised {
+    background-color: white;
+  }
 </style>

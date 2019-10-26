@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <template>
-  <div :id="`${normalizedId}-notes`" class="notes"></div>
+  <div :id="`${normalizedId}-notes`" class="notes" :class="{raised: raised}"></div>
 </template>
 
 <script>
@@ -22,6 +22,10 @@ export default {
     notes: {
       type: String,
       required: true,
+    },
+    raised: {
+      type: Boolean,
+      default: false,
     },
   },
   async mounted() {
@@ -105,5 +109,9 @@ export default {
 
   .print-mode .abcjs-note_selected {
     fill: #000000;
+  }
+
+  .raised {
+    background-color: white;
   }
 </style>

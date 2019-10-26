@@ -1,7 +1,7 @@
 <template>
   <div v-show="open">
     <div :class="{dim: !noDim}" class="screen">
-      <div class="modal" :title="title">
+      <div class="modal" :title="title" :class="{lower: lower}">
         <header class="modal-header">
           <h3 class="modal-header__title">{{ title }}</h3>
           <button id="close-modal" title="Close Modal" @click="closeModal">&times;</button>
@@ -34,6 +34,10 @@ export default {
       required: true,
     },
     noDim: {
+      type: Boolean,
+      default: false,
+    },
+    lower: {
       type: Boolean,
       default: false,
     },
@@ -106,7 +110,7 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: right;
-    margin: 0 0.4rem 0.2rem 0;
+    margin: 0 0.4rem 0.2rem 0.4rem;
   }
 
   .modal-action-button {
@@ -117,6 +121,15 @@ export default {
     cursor: pointer;
     font-size: 1rem;
     padding: 0 0 0.1rem 0;
+  }
+
+  .modal-action-button[disabled] {
+    border-bottom: 3px solid dimgray;
+  }
+
+  /*noinspection CssUnusedSymbol*/
+  .lower {
+    margin-top: 60vh;
   }
 
 </style>
