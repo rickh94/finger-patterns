@@ -1,9 +1,13 @@
+<!--suppress ALL -->
 <template>
-  <div>
+  <div class="app" :class="{'help-mode': helpOpen, 'print-mode': printView}">
     <header class="main-header">
       <h1 class="main-header__title">
         <button
-          :class="{'main-header__button': !printView}"
+          :class="{
+          'thick-bottom-border': !printView,
+          'raised-button': buttonRaised === 'instrument',
+          }"
           class="clear-button"
           title="Change Instrument"
           @click="instrumentSelectOpen = true"
@@ -17,7 +21,10 @@
       <h3 class="main-header__subtitle" v-if="instrumentString !== 'fingers-only'">on the
         <button
           title="Change String"
-          :class="{'main-header__button': !printView}"
+          :class="{
+          'thick-bottom-border': !printView,
+          'raised-button': buttonRaised === 'instrumentString',
+          }"
           class="clear-button"
           @click="stringSelectOpen = true"
           v-if="!printView"
@@ -29,7 +36,7 @@
       <h3 class="main-header__subtitle" v-else>
         <button
           title="Change String"
-          :class="{'main-header__button': !printView}"
+          :class="{'thick-bottom-border': !printView}"
           class="clear-button"
           @click="stringSelectOpen = true"
           v-if="!printView"
@@ -37,55 +44,97 @@
           Fingers Only
         </button>
       </h3>
-      <a class="print-button main-header__button clear-button"
-         target="_blank" rel="noopener noreferrer"
-         :href="printUrl"
-         v-show="!printView"
-      >
-        Print View
-      </a>
+      <div class="absolute-buttons">
+        <a class="print-button thick-bottom-border clear-button"
+           :class="{'raised-button': buttonRaised === 'print'}"
+           target="_blank" rel="noopener noreferrer"
+           :href="printUrl"
+           v-show="!printView"
+        >Print View</a>
+        <button
+          class="help-button thick-bottom-border clear-button"
+          @click="helpOpen = true"
+          v-show="!printView"
+        >
+          Help
+        </button>
+      </div>
     </header>
     <main class="main-body">
       <div class="col">
-        <v-finger-pattern pattern-name="1-2"
-                          :steps="['W', 'H', 'W', 'W']"
-                          :notes="oneTwoNotes"
-                          :clef="clef"
+        <v-finger-pattern
+          pattern-name="1-2"
+          :steps="['W', 'H', 'W', 'W']"
+          :notes="oneTwoNotes"
+          :clef="clef"
         ></v-finger-pattern>
-        <v-finger-pattern pattern-name="2-3"
-                          :steps="['W', 'W', 'H', 'W']"
-                          :notes="twoThreeNotes"
-                          :clef="clef"
+        <v-finger-pattern
+          pattern-name="2-3"
+          :steps="['W', 'W', 'H', 'W']"
+          :notes="twoThreeNotes"
+          :clef="clef"
         ></v-finger-pattern>
-        <v-finger-pattern pattern-name="3-4"
-                          :steps="['W', 'W', 'W', 'H']"
-                          :notes="threeFourNotes"
-                          :clef="clef"
+        <v-finger-pattern
+          pattern-name="3-4"
+          :steps="['W', 'W', 'W', 'H']"
+          :notes="threeFourNotes"
+          :clef="clef"
         ></v-finger-pattern>
       </div>
       <div class="col">
-        <v-finger-pattern pattern-name="Whole Steps"
-                          :steps="['H', 'W', 'W', 'W']"
-                          :notes="wholeStepsNotes"
-                          :clef="clef"
+        <v-finger-pattern
+          pattern-name="Whole Steps"
+          :steps="['H', 'W', 'W', 'W']"
+          :notes="wholeStepsNotes"
+          :clef="clef"
         ></v-finger-pattern>
-        <v-finger-pattern pattern-name="Half Steps"
-                          :steps="['W', 'H', 'A', 'H']"
-                          :notes="halfStepsNotes"
-                          :clef="clef"
+        <v-finger-pattern
+          pattern-name="Half Steps"
+          :steps="['W', 'H', 'A', 'H']"
+          :notes="halfStepsNotes"
+          :clef="clef"
         ></v-finger-pattern>
       </div>
     </main>
-    <v-modal :open="instrumentSelectOpen" title="Select Instrument"
-             @closeModal="instrumentSelectOpen = false">
+    <v-modal
+      :open="instrumentSelectOpen"
+      title="Select Instrument"
+      @closeModal="instrumentSelectOpen = false"
+    >
       <template v-slot:content>
         <v-instrument-select :selected="instrument" />
       </template>
     </v-modal>
-    <v-modal :open="stringSelectOpen" title="Select String"
-             @closeModal="stringSelectOpen = false">
+    <v-modal
+      :open="stringSelectOpen"
+      title="Select String"
+      @closeModal="stringSelectOpen = false"
+    >
       <template v-slot:content>
         <v-string-select :instrument="instrument" :selected="instrumentString" />
+      </template>
+    </v-modal>
+    <v-modal :open="helpOpen" title="Help" @closeModal="closeHelp" no-dim>
+      <template v-slot:content>
+        <p>Click the
+          <button class="thick-bottom-border clear-button" @click="buttonRaised = 'instrument'">
+            instrument
+          </button>
+          in the title to switch instruments.
+        </p>
+        <p>Click the
+          <button class="thick-bottom-border clear-button"
+                  @click="buttonRaised = 'instrumentString'">string
+          </button>
+          in the subtitle to change strings (or remove the staves entirely).
+        </p>
+        <p>Click the
+          <button class="thick-bottom-border clear-button" @click="buttonRaised = 'print'">Print
+            View
+          </button>
+          button to get a more printer friendly version. Your string and instrument settings will be
+          maintained.
+        </p>
       </template>
     </v-modal>
   </div>
@@ -111,6 +160,8 @@ export default {
       instrumentSelectOpen: false,
       stringSelectOpen: false,
       printView: false,
+      helpOpen: false,
+      buttonRaised: null,
     };
   },
   created() {
@@ -165,6 +216,12 @@ export default {
       }
     },
   },
+  methods: {
+    closeHelp() {
+      this.helpOpen = false;
+      this.buttonRaised = null;
+    },
+  },
 };
 </script>
 
@@ -177,12 +234,36 @@ export default {
   }
 
   body {
-    background-color: rgba(232, 0, 255, 0.02);
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  html {
+    margin: 0;
+    padding: 0;
   }
 
   /*noinspection CssUnusedSymbol*/
   body.print-mode {
     background-color: white;
+  }
+
+  .app {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(232, 0, 255, 0.02);
+  }
+
+  .app.print-mode {
+    background-color: white;
+  }
+
+  .help-mode {
+    background-color: rgba(0, 0, 0, 0.73);
   }
 
   .main-header {
@@ -210,11 +291,11 @@ export default {
     background-color: transparent;
     box-shadow: none;
     border: none;
+    cursor: pointer;
   }
 
-  .main-header__button {
+  .thick-bottom-border {
     border-bottom: 4px solid rgba(144, 0, 161, 0.79);
-    cursor: pointer;
   }
 
   .main-header__subtitle {
@@ -239,12 +320,30 @@ export default {
     margin: 1rem;
   }
 
-  .print-button {
+  .absolute-buttons {
     position: absolute;
     top: 0;
     right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+  }
+
+  .print-button {
+    display: block;
     margin: 0.5rem;
     text-decoration: none;
+  }
+
+  .help-button {
+    display: block;
+    margin: 0 0.5rem;
+    text-decoration: none;
+    flex-grow: 0;
+  }
+
+  .raised-button {
+    background-color: white;
   }
 
 </style>

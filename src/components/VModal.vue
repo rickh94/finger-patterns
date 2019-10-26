@@ -1,6 +1,6 @@
 <template>
   <div v-show="open">
-    <div class="screen">
+    <div :class="{dim: !noDim}" class="screen">
       <div class="modal" :title="title">
         <header class="modal-header">
           <h3 class="modal-header__title">{{ title }}</h3>
@@ -33,6 +33,10 @@ export default {
       type: String,
       required: true,
     },
+    noDim: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     closeModal() {
@@ -50,9 +54,13 @@ export default {
     width: 100%;
     height: 100%;
     z-index: 10;
-    background-color: rgba(0, 0, 0, 0.73);
     display: flex;
     justify-content: center;
+  }
+
+  /*noinspection CssUnusedSymbol*/
+  .dim {
+    background-color: rgba(0, 0, 0, 0.73);
   }
 
   .modal {
@@ -60,8 +68,10 @@ export default {
     background-color: white;
     z-index: 20;
     margin-top: 30vh;
-    padding: 0.3rem;
+    padding: 0.5rem;
     border-radius: 5px;
+    max-width: 50vw;
+    box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.73);
   }
 
   .modal-header {
@@ -73,7 +83,7 @@ export default {
   .modal-header__title {
     padding: 0;
     font-size: 1.5rem;
-    margin: 0.5rem 2rem 0 0.3rem;
+    margin: 0 2.5rem 0 0.3rem;
   }
 
   button#close-modal {
