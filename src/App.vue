@@ -82,7 +82,7 @@
         <v-instrument-select :selected="instrument" />
       </template>
     </v-modal>
-    <v-modal :open="stringSelectOpen" title="Select Instrument"
+    <v-modal :open="stringSelectOpen" title="Select String"
              @closeModal="stringSelectOpen = false">
       <template v-slot:content>
         <v-string-select :instrument="instrument" :selected="instrumentString" />
