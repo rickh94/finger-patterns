@@ -3,15 +3,23 @@
     <header>
       <h2 class="finger-pattern__heading">{{ patternName }} Pattern</h2>
     </header>
-    <v-notes-display :normalized-id="normalizedId" :clef="clef" :notes="notes"
-                     @noteClicked="onNoteClicked" v-if="notes" :key="`${clef}${notes}`"
-                     :raised="notesRaised"
+    <v-notes-display
+      v-if="notes"
+      :normalized-id="normalizedId"
+      :clef="clef"
+      :notes="notes"
+      @noteClicked="onNoteClicked"
+      :key="`${clef}${notes}`"
+      :raised="notesRaised"
     />
-    <v-finger-display :active-finger="activeFinger" :normalized-id="normalizedId"
-                      :widths="widths" :radius="radius"
-                      @activeFingerChanged="setFingerActive"
-                      :empty-string-left="emptyStringLeft"
-                      :raised="fingersRaised"
+    <v-finger-display
+      :active-finger="activeFinger"
+      :normalized-id="normalizedId"
+      :widths="widths"
+      :radius="radius"
+      @activeFingerChanged="setFingerActive"
+      :empty-string-left="emptyStringLeft"
+      :raised="fingersRaised"
     />
   </article>
 </template>

@@ -10,12 +10,11 @@
     :class="{raised: raised}"
   >
     <g
-      id="finger-pattern"
       transform="translate(0,-270.54165)">
       <path
         class="line stroke-default"
         d="M 0,283.59224 H 79.375"
-        id="path3713"
+        :id="normalizedId + '-finger-pattern-line'"
       />
       <circle
         :id="`${normalizedId}-finger-1`"
@@ -59,12 +58,11 @@
         :class="{'finger-active': activeFinger === 1}"
         :x="oneXPos - 1.2"
         y="280.45789"
-        id="text835"
+        :id="normalizedId + '-finger-1-text'"
         transform="scale(0.9999799,1.0000201)"
         @click="activeFingerChanged(1)"
       >
           <tspan
-            id="tspan833"
             :x="oneXPos - 1.2"
             y="280.45789"
           >1</tspan>
@@ -74,13 +72,12 @@
         :x="twoXPos - 1.3"
         :class="{'finger-active': activeFinger === 2}"
         y="280.45789"
-        id="text835-0"
+        :id="normalizedId + '-finger-2-text'"
         transform="scale(0.99997991,1.0000201)"
         class="svg-text stroke-default finger"
         @click="activeFingerChanged(2)"
       >
           <tspan
-            id="tspan833-4"
             :x="twoXPos - 1.3"
             y="280.45789"
           >2</tspan>
@@ -91,12 +88,11 @@
         :class="{'finger-active': activeFinger === 3}"
         :x="threeXPos - 1.4"
         y="280.41202"
-        id="text835-0-3"
+        :id="normalizedId + '-finger-3-text'"
         transform="scale(0.99997991,1.0000201)"
         @click="activeFingerChanged(3)"
       >
           <tspan
-            id="tspan833-4-1"
             :x="threeXPos - 1.4"
             y="280.41202"
           >3</tspan>
@@ -107,12 +103,11 @@
         :class="{'finger-active': activeFinger === 4}"
         :x="fourXPos - 1.5"
         y="280.45789"
-        id="text835-0-9"
+        :id="normalizedId + '-finger-4-text'"
         transform="scale(0.99997991,1.0000201)"
         @click="activeFingerChanged(4)"
       >
           <tspan
-            id="tspan833-4-7"
             :x="fourXPos - 1.5"
             y="280.45789"
           >4</tspan>
