@@ -1,5 +1,5 @@
 <template>
-  <v-modal :open="open" title="Help" @closeModal="onClose" no-dim :lower="lower">
+  <v-modal :open="open" title="Help" @closeModal="handleClose" no-dim :lower="lower">
     <template v-slot:content>
       <component :is="`v-help-${currentView}`"></component>
     </template>
@@ -7,7 +7,7 @@
       <button class="modal-action-button mr" @click="previousView" :disabled="!hasPrev">Previous
       </button>
       <button class="modal-action-button" @click="nextView" v-if="hasNext">Next</button>
-      <button class="modal-action-button" @click="onClose" v-else>Done</button>
+      <button class="modal-action-button" @click="handleClose" v-else>Done</button>
     </template>
   </v-modal>
 </template>
@@ -22,7 +22,7 @@ export default {
     VHelpInstrument: () => import('./help-views/VHelpInstrument.vue'),
     VHelpInstrumentString: () => import('./help-views/VHelpInstrumentString.vue'),
     VHelpNotes: () => import('./help-views/VHelpNotes.vue'),
-    VHelpFingers: () => import('./help-views/VHelpPrint.vue'),
+    VHelpFingers: () => import('./help-views/VHelpFingers.vue'),
   },
   data() {
     return {
@@ -81,6 +81,11 @@ export default {
       this.changeElementRaised(this.views[prevViewNum]);
       this.currentViewNumber = prevViewNum;
     },
+    handleClose() {
+      this.currentViewNumber = 0;
+      this.onClose();
+      this.changeElementRaised(this.currentView);
+    }
   },
   mounted() {
     this.changeElementRaised(this.currentView);

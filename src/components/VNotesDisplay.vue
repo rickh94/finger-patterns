@@ -27,12 +27,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    scale: {
+      type: Boolean,
+      default: false,
+    },
   },
   async mounted() {
     abcjs = await import('abcjs');
     abcjs.renderAbc(`${this.normalizedId}-notes`, this.tune, {
       scale: 1.1,
-      staffwidth: 300,
+      staffwidth: this.scale ? 1000 : 300,
       clickListener: this.onNoteClick,
       add_classes: true,
       paddingleft: 0,
@@ -40,7 +44,10 @@ export default {
       paddingbottom: 0,
       paddingtop: 0,
     });
-    EventBus.$on('activeFingerChanged', ({ parentId, finger }) => {
+    EventBus.$on('activeFingerChanged', ({
+      parentId,
+      finger,
+    }) => {
       if (!(parentId === this.normalizedId)) {
         return;
       }
@@ -77,41 +84,42 @@ export default {
       });
     },
     resetSelected() {
-      this.$el.querySelectorAll('.abcjs-note_selected').forEach((el) => {
-        el.classList.remove('abcjs-note_selected');
-      });
+      this.$el.querySelectorAll('.abcjs-note_selected')
+          .forEach((el) => {
+            el.classList.remove('abcjs-note_selected');
+          });
     },
   },
 };
 </script>
 
 <style>
-  .notes {
-    cursor: pointer;
-  }
+.notes {
+  cursor: pointer;
+}
 
-  .print-mode .notes {
-    cursor: default;
-  }
+.print-mode .notes {
+  cursor: default;
+}
 
-  .abcjs-note {
-    fill: #000000;
-    cursor: pointer;
-  }
+.abcjs-note {
+  fill: #000000;
+  cursor: pointer;
+}
 
-  .abcjs-staff {
-    fill: #000000;
-  }
+.abcjs-staff {
+  fill: #000000;
+}
 
-  .abcjs-note_selected {
-    fill: #ae00bf;
-  }
+.abcjs-note_selected {
+  fill: #ae00bf;
+}
 
-  .print-mode .abcjs-note_selected {
-    fill: #000000;
-  }
+.print-mode .abcjs-note_selected {
+  fill: #000000;
+}
 
-  .raised {
-    background-color: white;
-  }
+.raised {
+  background-color: white;
+}
 </style>

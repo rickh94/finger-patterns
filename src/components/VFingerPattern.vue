@@ -28,6 +28,7 @@
 import VFingerDisplay from './VFingerDisplay.vue';
 import VNotesDisplay from './VNotesDisplay.vue';
 import EventBus from '../eventbus';
+import computeWidths from '@/util/computeWidths';
 
 export default {
   name: 'VFingerPattern',
@@ -110,15 +111,7 @@ export default {
   },
   computed: {
     widths() {
-      return this.steps.map((item) => {
-        if (item === 'H') {
-          return 4;
-        }
-        if (item === 'A') {
-          return 20;
-        }
-        return 16;
-      });
+      return this.steps.map(computeWidths);
     },
     normalizedId() {
       return this.patternName.toLowerCase().replace(' ', '-');
