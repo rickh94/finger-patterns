@@ -19,12 +19,13 @@
         <span v-else>{{ instrument }}</span>
       </h3>
     </header>
-    <main class="main-body">
+    <main class="scale-body">
       <v-notes-display
           normalized-id="scale"
           :clef="instrument === 'Violin' ? 'treble' : 'alto'"
           :notes="scales[scaleNote][scaleMode].notes"
           scale
+          @noteClicked="onNoteClicked"
       >
       </v-notes-display>
       <div class="scale-finger-patterns">
@@ -75,19 +76,19 @@
 </template>
 
 <script>
-import VNotesDisplay from '@/components/VNotesDisplay.vue';
-import VFingerDisplay from '@/components/VFingerDisplay';
-import scales from '@/util/scales';
-import computeWidths from '@/util/computeWidths';
+import VNotesDisplay from "@/components/VNotesDisplay.vue";
+import VFingerDisplay from "@/components/VFingerDisplay";
+import scales from "@/util/scales";
+import computeWidths from "@/util/computeWidths";
 
 export default {
-  name: 'ScalesPage',
+  name: "ScalesPage",
   components: { VNotesDisplay, VFingerDisplay },
   data() {
     return {
-      scaleNote: 'A',
-      scaleMode: 'Major',
-      instrument: 'Violin',
+      scaleNote: "B",
+      scaleMode: "Major",
+      instrument: "Violin",
       printView: false,
       scaleSelectOpen: false,
       instrumentSelectOpen: true,
@@ -103,7 +104,10 @@ export default {
     handleFingerChange(string, num) {
       this.activeString = string;
       this.activeFinger = num;
-    }
+    },
+    onNoteClicked(num) {
+      console.log("note clicked", num);
+    },
   },
 };
 </script>
@@ -128,6 +132,14 @@ export default {
   font-weight: bold;
   margin-right: 0.5rem;
   font-size: 1.5rem;
+}
+
+.scale-body {
+  margin: 1rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 </style>
