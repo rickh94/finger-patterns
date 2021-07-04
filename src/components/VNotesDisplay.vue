@@ -1,4 +1,3 @@
-<!--suppress ALL -->
 <template>
   <div :id="`${normalizedId}-notes`" class="notes" :class="{raised: raised}"></div>
 </template>
@@ -65,6 +64,10 @@ export default {
       if (!(parentId === this.normalizedId)) {
         return;
       }
+      if (finger > 15 || finger < 1) {
+        this.resetSelected();
+        return;
+      }
       const noteNum = (finger - 1) % 4;
       const measureNum = Math.floor((finger - 1) / 4);
       const $note = this.$el.querySelector(`.abcjs-n${noteNum}.abcjs-m${measureNum}`);
@@ -98,7 +101,7 @@ export default {
           if (this.scale) {
             const measureRegex = /abcjs-m(\d)/;
             const match2 = measureRegex.exec(el.className.baseVal);
-            noteNum += parseInt(match2[1] * 4, 10);
+            noteNum += parseInt(match2[1], 10) * 4;
           }
           this.$emit("noteClicked", noteNum);
         }

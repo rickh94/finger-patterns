@@ -30,43 +30,43 @@
       </v-notes-display>
       <div class="scale-finger-patterns">
         <div class="row">
-          <span class="string-name">G String</span>
+          <span class="string-name">{{instrument === 'Violin' ? 'G' : 'C'}} String</span>
           <v-finger-display
-              :active-finger="activeString === 'G' ? activeFinger : null"
+              :active-finger="activeString === 0 ? activeFinger : null"
               normalized-id="scale"
-              :widths="widths('G')"
+              :widths="widths(4)"
               :radius="2"
-              @activeFingerChanged="(num) => handleFingerChange('G', num)"
+              @activeFingerChanged="(num) => handleFingerChange(0, num)"
           ></v-finger-display>
         </div>
         <div class="row">
-          <span class="string-name">D String</span>
+          <span class="string-name">{{instrument === 'Violin' ? 'D' : 'G'}} String</span>
           <v-finger-display
-              :active-finger="activeString === 'D' ? activeFinger : null"
+              :active-finger="activeString === 1 ? activeFinger : null"
               normalized-id="scale"
-              :widths="widths('D')"
+              :widths="widths(3)"
               :radius="2"
-              @activeFingerChanged="(num) => handleFingerChange('D', num)"
+              @activeFingerChanged="(num) => handleFingerChange(1, num)"
           ></v-finger-display>
         </div>
         <div class="row">
-          <span class="string-name">A String</span>
+          <span class="string-name">{{instrument === 'Violin' ? 'A' : 'D'}} String</span>
           <v-finger-display
-              :active-finger="activeString === 'A' ? activeFinger : null"
+              :active-finger="activeString === 2 ? activeFinger : null"
               normalized-id="scale"
-              :widths="widths('A')"
+              :widths="widths(2)"
               :radius="2"
-              @activeFingerChanged="(num) => handleFingerChange('A', num)"
+              @activeFingerChanged="(num) => handleFingerChange(2, num)"
           ></v-finger-display>
         </div>
         <div class="row">
-          <span class="string-name">E String</span>
+          <span class="string-name">{{instrument === 'Violin' ? 'E' : 'A'}} String</span>
           <v-finger-display
-              :active-finger="activeString === 'E' ? activeFinger : null"
+              :active-finger="activeString === 3 ? activeFinger : null"
               normalized-id="scale"
-              :widths="widths('E')"
+              :widths="widths(1)"
               :radius="2"
-              @activeFingerChanged="(num) => handleFingerChange('E', num)"
+              @activeFingerChanged="(num) => handleFingerChange(3, num)"
           ></v-finger-display>
         </div>
       </div>
@@ -80,6 +80,7 @@ import VNotesDisplay from "@/components/VNotesDisplay.vue";
 import VFingerDisplay from "@/components/VFingerDisplay";
 import scales from "@/util/scales";
 import computeWidths from "@/util/computeWidths";
+import EventBus from "@/eventbus";
 
 export default {
   name: "ScalesPage",
@@ -99,16 +100,28 @@ export default {
   },
   methods: {
     widths(string) {
-      return scales[this.scaleNote][this.scaleMode].patterns[string].map(computeWidths);
+      return this.scale.patterns[string].map(computeWidths);
     },
     handleFingerChange(string, num) {
       this.activeString = string;
       this.activeFinger = num;
+      const nextFinger = string * 4 + num - this.startOffset;
+      EventBus.$emit('activeFingerChanged', {parentId: 'scale', finger: nextFinger})
     },
     onNoteClicked(num) {
-      console.log("note clicked", num);
+      const nextNum = num + this.startOffset;
+      this.activeString = Math.floor((nextNum - 1 ) / 4);
+      this.activeFinger = nextNum % 4 || 4;  // what a hack. allows to select fourth fingers in scales without breaking other functionality
     },
   },
+  computed: {
+    scale() {
+      return scales[this.scaleNote][this.scaleMode];
+    },
+    startOffset() {
+      return this.scale.startOffset;
+    }
+  }
 };
 </script>
 
