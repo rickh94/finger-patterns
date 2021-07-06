@@ -32,9 +32,11 @@ export default {
     },
   },
   async mounted() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const printView = urlParams.get('print') || false;
     let staffWidth = 300;
     if (this.scale) {
-      if (document.body.scrollWidth > 1000) {
+      if (document.body.scrollWidth > 1000 || printView) {
         staffWidth = 1000;
       } else {
         staffWidth = document.body.scrollWidth - 20;
