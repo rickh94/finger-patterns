@@ -113,7 +113,6 @@ import VFingerDisplay from "@/components/VFingerDisplay";
 import scales from "@/util/scales";
 import computeWidths from "@/util/computeWidths";
 import EventBus from "@/eventbus";
-import {notes, modes} from '@/util/notesAndModes.js'
 
 export default {
   name: "ScalesPage",
@@ -125,7 +124,7 @@ export default {
   },
   data() {
     return {
-      scaleNote: "B",
+      scaleNote: "A",
       scaleMode: "Major",
       instrument: "Violin",
       printView: false,
@@ -134,8 +133,6 @@ export default {
       scales: scales,
       activeFinger: null,
       activeString: null,
-      possibleNotes: notes,
-      possibleModes: modes,
     };
   },
   methods: {
@@ -166,6 +163,12 @@ export default {
     },
     startOffset() {
       return this.scale.startOffset;
+    },
+    possibleNotes() {
+      return Object.keys(scales[this.instrument]);
+    },
+    possibleModes() {
+      return Object.keys(scales[this.instrument][this.scaleNote]);
     },
   },
 };

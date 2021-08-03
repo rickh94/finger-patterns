@@ -1,3 +1,3 @@
-export const notes = ["A♭", "A", "A#", "B♭", "B", "B#", "C♭", "C", "C#", "D♭", "D",
-  "D#", "E♭", "E", "E#", "F♭", "F", "F#", "G♭", "G", "G#"];
+export const notes = ["Ab", "A", "A#", "Bb", "B", "B#", "Cb", "C", "C#", "Db", "D",
+  "D#", "Eb", "E", "E#", "Fb", "F", "F#", "Gb", "G", "G#"];
 export const modes = ["Major", "Natural Minor", "Melodic Minor", "Harmonic Minor"];
